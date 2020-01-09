@@ -28,6 +28,7 @@ namespace VaultApi
         {
             //Di
             services.AddScoped<DbContext,ApplicationContext>();
+            services.AddScoped(EntityCheker)
             services.AddScoped<IUserManager, UserManager>();
 
             //mapper
