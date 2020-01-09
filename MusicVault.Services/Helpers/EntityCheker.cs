@@ -6,7 +6,7 @@ namespace MusicVault.Services.Helpers
 {
     public class EntityCheker
     {
-        private static DbContext context;
+        private readonly DbContext context;
 
 
         public EntityCheker(DbContext db)

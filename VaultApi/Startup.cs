@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicVault.Data.EF;
+using MusicVault.Services.Helpers;
 using MusicVault.Services.Interfaces;
 using MusicVault.Services.Services;
 
@@ -28,7 +29,7 @@ namespace VaultApi
         {
             //Di
             services.AddScoped<DbContext,ApplicationContext>();
-            services.AddScoped(EntityCheker)
+            services.AddScoped<EntityCheker>();
             services.AddScoped<IUserManager, UserManager>();
 
             //mapper
