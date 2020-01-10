@@ -19,7 +19,7 @@ namespace MusicVault.Services.Services
             cheker = entityCheker;
         }
 
-        public async Task AddUser(User user)
+        public async Task AddUser(User user,string password)
         {
             // тут пока все )
             if (!await this.cheker.CheckLoginAsync(user.Login))
@@ -27,6 +27,11 @@ namespace MusicVault.Services.Services
 
             if (!await this.cheker.ChekEmailAsync(user.Email))
                 throw new EntityValidationException($"Email {user.Email} is using by another user");
+
+            byte[] passHash, passSalt=new byte[] { };
+            PassCryptHelper.CreatePassword(password, out passHash, out passSalt);
+            user.PasswordHash = passHash;
+            user.PasswordSalt = passSalt;
 
             await context.Set<User>().AddAsync(user);
             await context.SaveChangesAsync();

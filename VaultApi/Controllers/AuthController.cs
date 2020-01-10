@@ -14,7 +14,7 @@ namespace VaultApi.Controllers
         private readonly IUserManager userManager;
         private readonly IMapper mapper;
 
-        public AuthController(IUserManager manager,IMapper map)
+        public AuthController(IUserManager manager, IMapper map)
         {
             userManager = manager;
             mapper = map;
@@ -30,16 +30,12 @@ namespace VaultApi.Controllers
             }
             // если все ок то маппим нашу вьюху в юзера
             var user = mapper.Map<User>(model);
-            //передаем в сервис (потом допишем класс эксепшенов для валидации модели при попытке записи)
-            // заебался парсить SqlExeception из EF Core DbSavechangeEception TODO!!!
-
-           //чекаем маппер+
 
             try
             {
-                await userManager.AddUser(user);
+                await userManager.AddUser(user, model.Password);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // пока ничего не будет но блок обязателен в сервис иди
                 return BadRequest(new { error = ex.Message });

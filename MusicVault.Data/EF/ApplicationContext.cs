@@ -12,7 +12,7 @@ namespace MusicVault.Data.EF
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -26,10 +26,7 @@ namespace MusicVault.Data.EF
 
 
 
-            modelBuilder.Entity<User>().HasData(new User[]
-            {
-                new User{Id=System.Guid.NewGuid(),Email="greatdragone75@gmail.com",Login="TestUser1",Password="123456"}
-            });
+            
         }
     }
 }
