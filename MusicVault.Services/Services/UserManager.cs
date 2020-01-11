@@ -29,9 +29,12 @@ namespace MusicVault.Services.Services
                 throw new EntityValidationException($"Email {user.Email} is using by another user");
 
             byte[] passHash, passSalt = new byte[] { };
-            PassCryptHelper.CreatePassword(password, out passHash, out passSalt);
-            user.PasswordHash = passHash;
-            user.PasswordSalt = passSalt;
+            await Task.Run(() =>
+            {
+                PassCryptHelper.CreatePassword(password, out passHash, out passSalt);
+                user.PasswordHash = passHash;
+                user.PasswordSalt = passSalt;
+            });
 
             await context.Set<User>().AddAsync(user);
             await context.SaveChangesAsync();
@@ -44,7 +47,8 @@ namespace MusicVault.Services.Services
             var user = await context.Set<User>().FirstOrDefaultAsync(x=> x.Login==login);
             //TODO подумать,вызывать исключения или возрашать булеан 
             if (user == null) return false;
-            return PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash);
+            // await Task.Run дожидаемся выполнения таска в асинхроном стиле
+            return await Task.Run(()=>PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash));
         }
 
 
