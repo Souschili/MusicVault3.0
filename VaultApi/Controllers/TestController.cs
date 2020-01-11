@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using MusicVault.Data.Entity;
+using MusicVault.Services.Helpers;
 using VaultApi.ViewModels;
 
 namespace VaultApi.Controllers
@@ -15,9 +17,12 @@ namespace VaultApi.Controllers
     public class TestController : ControllerBase
     {
         private readonly IMapper mapper;
-        public TestController(IMapper map)
+        private readonly IOptions<JwtOptions> options;
+
+        public TestController(IMapper map,IOptions<JwtOptions> opt)
         {
             mapper = map;
+            options = opt;
         }
         [HttpGet("GetUser")]
         public IActionResult Get()
@@ -27,6 +32,12 @@ namespace VaultApi.Controllers
             //вот так вспомнил наконецто
             var user=mapper.Map<User>(userView);
             return Ok(user);
+        }
+
+        [HttpGet("Config")]
+        public IActionResult get()
+        {
+            return Ok(options.Value);
         }
     }
 }

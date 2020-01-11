@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using MusicVault.Data.EF;
 using MusicVault.Services.Helpers;
 using MusicVault.Services.Interfaces;
@@ -31,11 +34,17 @@ namespace VaultApi
             services.AddScoped<DbContext,ApplicationContext>();
             services.AddScoped<EntityCheker>();
             services.AddScoped<IUserManager, UserManager>();
+            //todo del
+            //services.AddSingleton<JwtOptions>(); как и думал он сам по себе синглтон и система ег сама инжектит
 
             //mapper
             services.AddAutoMapper(typeof(Startup));
 
+            //смотрим на файл настроек , так оптимальней чем привязка
+            // services.AddOptions(); ненужно потом удалить
 
+            //на выходе получаем IOptions<T> привязка к разделу конфигурации
+            services.Configure<JwtOptions>(Configuration.GetSection("Jwt")); 
 
             services.AddDbContext<ApplicationContext>(cfg =>
             {
@@ -59,7 +68,29 @@ namespace VaultApi
                 });
             });
 
-            
+            //Jwt
+            services.AddAuthentication(x =>
+            {
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
+                    ClockSkew = TimeSpan.FromSeconds(10)
+                };
+            });
 
             services.AddControllers();
         }
@@ -76,6 +107,9 @@ namespace VaultApi
                 config.SwaggerEndpoint("./swagger/v1/swagger.json","Music Vault Api");
                 config.RoutePrefix = String.Empty;
             });
+
+            app.UseAuthentication();
+
             app.UseRouting();
             
             app.UseEndpoints(endpoints =>
