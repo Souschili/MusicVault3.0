@@ -13,13 +13,13 @@ namespace MusicVault.Services.Services
     {
         private readonly DbContext context;
         private readonly EntityCheker cheker;
-        public UserManager(DbContext db,EntityCheker entityCheker)
+        public UserManager(DbContext db, EntityCheker entityCheker)
         {
             context = db;
             cheker = entityCheker;
         }
 
-        public async Task AddUser(User user,string password)
+        public async Task AddUser(User user, string password)
         {
             // тут пока все )
             if (!await this.cheker.CheckLoginAsync(user.Login))
@@ -28,7 +28,7 @@ namespace MusicVault.Services.Services
             if (!await this.cheker.ChekEmailAsync(user.Email))
                 throw new EntityValidationException($"Email {user.Email} is using by another user");
 
-            byte[] passHash, passSalt=new byte[] { };
+            byte[] passHash, passSalt = new byte[] { };
             PassCryptHelper.CreatePassword(password, out passHash, out passSalt);
             user.PasswordHash = passHash;
             user.PasswordSalt = passSalt;
@@ -38,6 +38,15 @@ namespace MusicVault.Services.Services
         }
 
 
+        public async Task<bool> LogIn(string login, string password)
+        {
+            //ищем юзера по логину
+            var user = await context.Set<User>().FirstOrDefaultAsync(x=> x.Login==login);
+            //TODO подумать,вызывать исключения или возрашать булеан 
+            if (user == null) return false;
+            return PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash);
+        }
+
 
         /// <summary>
         /// тестовый метод
@@ -45,5 +54,7 @@ namespace MusicVault.Services.Services
         /// <returns></returns>
         public async Task<User> GetUserAsync() =>
             await context.Set<User>().FirstOrDefaultAsync();
+
+
     }
 }

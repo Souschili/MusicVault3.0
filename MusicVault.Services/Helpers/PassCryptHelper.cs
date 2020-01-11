@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace MusicVault.Services.Helpers
 {
@@ -11,6 +12,20 @@ namespace MusicVault.Services.Helpers
                 passSalt = hmac.Key;
                 passHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pass));
             }
+        }
+
+        public static bool VerifyPassword(string password, byte[] userSalt, byte[] userHash)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA256(userSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != userHash[i]) return false;
+                }
+            }
+
+            return true;
         }
     }
 }

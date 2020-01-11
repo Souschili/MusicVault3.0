@@ -19,7 +19,11 @@ namespace VaultApi.Controllers
             userManager = manager;
             mapper = map;
         }
-
+        /// <summary>
+        /// Регистрация пользователей
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("Register")]
         public async System.Threading.Tasks.Task<IActionResult> RegisterAsync([FromBody]UserRegistrationModel model)
         {
@@ -45,5 +49,20 @@ namespace VaultApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Вход в систему
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpPost("LogIn")]
+        public async System.Threading.Tasks.Task<IActionResult> LoginAsync(string login,string password )
+        {
+            var rezult = await userManager.LogIn(login, password);
+            if (!rezult)
+                return BadRequest($"Password wrong {password}");
+
+            return Ok("You logIn");
+        }
     }
 }
