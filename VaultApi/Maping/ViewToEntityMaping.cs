@@ -10,7 +10,7 @@ namespace VaultApi.Maping
         public ViewToEntityMaping()
         {
             //обратный реверс потом , нам пока он ненужен 
-            CreateMap<UserRegistrationModel, User>();
+            CreateMap<UserRegistrationModel, User>().ReverseMap();
         }
     }
 }
