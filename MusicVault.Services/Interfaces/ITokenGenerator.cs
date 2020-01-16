@@ -5,7 +5,7 @@ namespace MusicVault.Services.Interfaces
 {
     public interface ITokenGenerator
     {
-        Task<string> GenerateAccesseToken(User user);
-        Task<string> GenerateRefreshToken();
+        Task<string> GenerateAccesseTokenAsync(User user);
+        Task<string> GenerateRefreshTokenAsync();
     }
 }
