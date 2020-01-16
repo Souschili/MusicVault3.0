@@ -41,7 +41,6 @@ namespace VaultApi.Controllers
             try
             {
                 await userManager.AddUser(user, model.Password);
-                //возращаем токены(модель не нужна)
                 var token = await tokenGenerator.GenerateJwtTokenAsync(user);
                 return Ok(token);
             }
