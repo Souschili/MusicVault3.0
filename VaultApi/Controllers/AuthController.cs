@@ -41,21 +41,15 @@ namespace VaultApi.Controllers
             try
             {
                 await userManager.AddUser(user, model.Password);
+                //возращаем токены(модель не нужна)
+                var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
+                var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
             }
             catch (Exception ex)
             {
                 // TODO общий класс ошибок
                 return BadRequest(new { error = ex.Message });
             }
-            //возращаем токены(модель не нужна)
-            var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
-            var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
-
-            return Ok(new
-            {
-                token,
-                refresh
-            });
 
         }
 
@@ -68,22 +62,18 @@ namespace VaultApi.Controllers
         [HttpPost("LogIn")]
         public async Task<IActionResult> LoginAsync(string login, string password)
         {
-            var rezult = await userManager.LogIn(login, password);
-            if (!rezult)
-                //для теста,переделать на "логин или пароль неверный" 
-                return BadRequest($"Password wrong {password}");
-
-            var user = await userManager.GetUserAsync();
-
-            var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
-            var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
-
-            return Ok(new
+            try
             {
-                token,
-                refresh
-            });
-
+                //если юзера нет, то вылетит ошибка отдадим юзеру мы не жадные
+                var user = await userManager.LogIn(login, password);
+                var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
+                var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
+                return Ok(new { token, refresh });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
 
         }
     }

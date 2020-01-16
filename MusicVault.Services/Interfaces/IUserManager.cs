@@ -6,7 +6,7 @@ namespace MusicVault.Services.Interfaces
     public interface IUserManager
     {
         Task AddUser(User user, string password);
-        Task<bool> LogIn(string login, string password);
+        Task<User> LogIn(string login, string password);
         Task<User> FindUserByLoginAsync(string login);
         Task<User> FindUserByIdAsync(string id);
         Task<User> GetUserAsync();

@@ -41,14 +41,16 @@ namespace MusicVault.Services.Services
         }
 
 
-        public async Task<bool> LogIn(string login, string password)
+        public async Task<User> LogIn(string login, string password)
         {
             //ищем юзера по логину
             var user = await context.Set<User>().FirstOrDefaultAsync(x=> x.Login==login);
             //TODO подумать,вызывать исключения или возрашать булеан 
-            if (user == null) return false;
+            if (user == null)
+                throw new ArgumentException("Password or Login is invalid");
             // await Task.Run дожидаемся выполнения таска в асинхроном стиле
-            return await Task.Run(()=>PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash));
+            await Task.Run(()=>PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash));
+            return user;
         }
 
 
