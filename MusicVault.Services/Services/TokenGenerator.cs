@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
+using MusicVault.Services.DTO;
 
 namespace MusicVault.Services.Services
 {
@@ -92,5 +93,20 @@ namespace MusicVault.Services.Services
                 return await Task.Run(() => Convert.ToBase64String(randomNumber));
             }
         }
+
+        public async Task<TokenDTO> GenerateJwtTokenAsync(User user)
+        {
+            var token = await GenerateAccesseTokenAsync(user);
+            var refresh = await GenerateRefreshTokenAsync();
+            var exp = 30 * 3600; //пока так ,потом поправлю
+            return new TokenDTO
+            {
+                Token = token,
+                Refresh = refresh,
+                Exp = exp
+            };
+
+        }
+
     }
 }

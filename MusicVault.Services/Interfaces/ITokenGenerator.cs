@@ -1,4 +1,5 @@
 ﻿using MusicVault.Data.Entity;
+using MusicVault.Services.DTO;
 using System.Threading.Tasks;
 
 namespace MusicVault.Services.Interfaces
@@ -7,5 +8,6 @@ namespace MusicVault.Services.Interfaces
     {
         Task<string> GenerateAccesseTokenAsync(User user);
         Task<string> GenerateRefreshTokenAsync();
+        Task<TokenDTO> GenerateJwtTokenAsync(User user);
     }
 }
