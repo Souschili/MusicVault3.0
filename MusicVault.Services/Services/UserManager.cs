@@ -59,6 +59,16 @@ namespace MusicVault.Services.Services
         public async Task<User> GetUserAsync() =>
             await context.Set<User>().FirstOrDefaultAsync();
 
+        public async Task<User> FindUserByLoginAsync(string login)
+        {
+            var user = await context.Set<User>().FirstOrDefaultAsync(x => x.Login == login);
+            return user;
+        }
 
+        public async Task<User> FindUserByIdAsync(string id)
+        {
+            var user = await context.Set<User>().FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return user;
+        }
     }
 }

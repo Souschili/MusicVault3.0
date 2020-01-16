@@ -16,7 +16,7 @@ namespace VaultApi.Controllers
         private readonly IMapper mapper;
         private readonly ITokenGenerator tokenGenerator;
 
-        public AuthController(IUserManager manager, IMapper map,ITokenGenerator generator)
+        public AuthController(IUserManager manager, IMapper map, ITokenGenerator generator)
         {
             userManager = manager;
             mapper = map;
@@ -50,10 +50,11 @@ namespace VaultApi.Controllers
             //возращаем токены(модель не нужна)
             var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
             var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
+
             return Ok(new
             {
-                access = token,
-                refresh = refresh
+                token,
+                refresh
             });
 
         }
@@ -65,15 +66,25 @@ namespace VaultApi.Controllers
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost("LogIn")]
-        public async Task<IActionResult> LoginAsync(string login,string password )
+        public async Task<IActionResult> LoginAsync(string login, string password)
         {
             var rezult = await userManager.LogIn(login, password);
             if (!rezult)
                 //для теста,переделать на "логин или пароль неверный" 
                 return BadRequest($"Password wrong {password}");
 
+            var user = await userManager.GetUserAsync();
 
-            return Ok("You logIn");
+            var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
+            var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
+
+            return Ok(new
+            {
+                token,
+                refresh
+            });
+
+
         }
     }
 }
