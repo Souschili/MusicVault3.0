@@ -10,7 +10,7 @@ namespace MusicVault.Services.Helpers
             using (var hmac = new System.Security.Cryptography.HMACSHA256())
             {
                 passSalt = hmac.Key;
-                passHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pass));
+                passHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(pass));
             }
         }
 
@@ -18,7 +18,7 @@ namespace MusicVault.Services.Helpers
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA256(userSalt))
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 for (int i = 0; i < computedHash.Length; i++)
                 {
                     if (computedHash[i] != userHash[i]) return false;

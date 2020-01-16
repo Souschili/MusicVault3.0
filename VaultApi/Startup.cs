@@ -109,10 +109,11 @@ namespace VaultApi
                 config.RoutePrefix = String.Empty;
             });
 
-            app.UseAuthentication();
+            
 
             app.UseRouting();
-            
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

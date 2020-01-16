@@ -19,10 +19,11 @@ namespace VaultApi.Controllers
         private readonly IOptions<JwtOptions> options;
         private readonly ITokenGenerator generator;
 
-        public TestController(IMapper map,IOptions<JwtOptions> opt)
+        public TestController(IMapper map,IOptions<JwtOptions> opt,ITokenGenerator gen)
         {
             mapper = map;
             options = opt;
+            generator = gen;
         }
         [HttpGet("GetUser")]
         public IActionResult Get()
@@ -40,7 +41,7 @@ namespace VaultApi.Controllers
             return Ok(options.Value);
         }
 
-        [HttpGet]
+        [HttpGet("Token")]
         public async Task<IActionResult> TokenDTOAsync()
         {
             //левый юзер
@@ -57,11 +58,13 @@ namespace VaultApi.Controllers
             var refresh = await generator.GenerateRefreshTokenAsync();
             return Ok( new
             {
+                access=token,
+                refresh=refresh
 
             });
         }
 
-
+        [HttpGet("Secret")]
         [Authorize]
         public IActionResult Secret()
         {

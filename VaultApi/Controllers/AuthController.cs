@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MusicVault.Data.Entity;
 using MusicVault.Services.Interfaces;
 using System;
+using System.Threading.Tasks;
 using VaultApi.ViewModels;
 
 namespace VaultApi.Controllers
@@ -13,11 +14,13 @@ namespace VaultApi.Controllers
     {
         private readonly IUserManager userManager;
         private readonly IMapper mapper;
+        private readonly ITokenGenerator tokenGenerator;
 
-        public AuthController(IUserManager manager, IMapper map)
+        public AuthController(IUserManager manager, IMapper map,ITokenGenerator generator)
         {
             userManager = manager;
             mapper = map;
+            tokenGenerator = generator;
         }
         /// <summary>
         /// Регистрация пользователей
@@ -25,14 +28,14 @@ namespace VaultApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Register")]
-        public async System.Threading.Tasks.Task<IActionResult> RegisterAsync([FromBody]UserRegistrationModel model)
+        public async Task<IActionResult> RegisterAsync([FromBody]UserRegistrationModel model)
         {
             if (!ModelState.IsValid)
             {
-                //чтото придумать с ошибками , автоматом возращается ModelState
+                //чтото придумать с ошибками , автоматом возращается ModelState.errors
                 return BadRequest();
             }
-            // если все ок то маппим нашу вьюху в юзера
+            // если все ок то маппим нашу вьюху в юзера 
             var user = mapper.Map<User>(model);
 
             try
@@ -41,12 +44,18 @@ namespace VaultApi.Controllers
             }
             catch (Exception ex)
             {
-                // пока ничего не будет но блок обязателен в сервис иди
+                // TODO общий класс ошибок
                 return BadRequest(new { error = ex.Message });
             }
+            //возращаем токены(модель не нужна)
+            var token = await tokenGenerator.GenerateAccesseTokenAsync(user);
+            var refresh = await tokenGenerator.GenerateRefreshTokenAsync();
+            return Ok(new
+            {
+                access = token,
+                refresh = refresh
+            });
 
-
-            return Ok();
         }
 
         /// <summary>
@@ -56,11 +65,13 @@ namespace VaultApi.Controllers
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost("LogIn")]
-        public async System.Threading.Tasks.Task<IActionResult> LoginAsync(string login,string password )
+        public async Task<IActionResult> LoginAsync(string login,string password )
         {
             var rezult = await userManager.LogIn(login, password);
             if (!rezult)
+                //для теста,переделать на "логин или пароль неверный" 
                 return BadRequest($"Password wrong {password}");
+
 
             return Ok("You logIn");
         }
