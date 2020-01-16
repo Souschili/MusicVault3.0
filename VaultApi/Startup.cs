@@ -34,6 +34,7 @@ namespace VaultApi
             services.AddScoped<DbContext,ApplicationContext>();
             services.AddScoped<EntityCheker>();
             services.AddScoped<IUserManager, UserManager>();
+            services.AddTransient<ITokenGenerator, TokenGenerator>();
             //todo del
             //services.AddSingleton<JwtOptions>(); как и думал он сам по себе синглтон и система ег сама инжектит
 

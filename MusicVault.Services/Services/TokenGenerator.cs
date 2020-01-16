@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 
 namespace MusicVault.Services.Services
 {
@@ -50,7 +51,12 @@ namespace MusicVault.Services.Services
 
         public async Task<string> GenerateRefreshToken()
         {
-            throw new NotImplementedException();
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return await Task.Run(() => Convert.ToBase64String(randomNumber));
+            }
         }
     }
 }
