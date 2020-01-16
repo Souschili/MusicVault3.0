@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MusicVault.Data.Entity;
 using MusicVault.Services.Helpers;
+using MusicVault.Services.Interfaces;
+using System;
+using System.Threading.Tasks;
 using VaultApi.ViewModels;
 
 namespace VaultApi.Controllers
@@ -18,6 +17,7 @@ namespace VaultApi.Controllers
     {
         private readonly IMapper mapper;
         private readonly IOptions<JwtOptions> options;
+        private readonly ITokenGenerator generator;
 
         public TestController(IMapper map,IOptions<JwtOptions> opt)
         {
@@ -38,6 +38,34 @@ namespace VaultApi.Controllers
         public IActionResult get()
         {
             return Ok(options.Value);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TokenDTOAsync()
+        {
+            //левый юзер
+            var user = new User
+            {
+                Create=DateTime.Now,
+                Login="Geronimo",
+                Email="shubnigurat@dark.org",
+                Id=System.Guid.NewGuid(),
+                //пароли опускаем
+            };
+
+            var token = await generator.GenerateAccesseTokenAsync(user);
+            var refresh = await generator.GenerateRefreshTokenAsync();
+            return Ok( new
+            {
+
+            });
+        }
+
+
+        [Authorize]
+        public IActionResult Secret()
+        {
+            return Content("Very secret information");
         }
     }
 }
