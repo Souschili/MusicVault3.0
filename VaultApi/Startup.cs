@@ -31,7 +31,7 @@ namespace VaultApi
         public void ConfigureServices(IServiceCollection services)
         {
             //Di
-            services.AddScoped<DbContext,ApplicationContext>();
+            services.AddScoped<DbContext, ApplicationContext>();
             services.AddScoped<EntityCheker>();
             services.AddScoped<IUserManager, UserManager>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();
@@ -45,7 +45,7 @@ namespace VaultApi
             // services.AddOptions(); ненужно потом удалить
 
             //на выходе получаем IOptions<T> привязка к разделу конфигурации
-            services.Configure<JwtOptions>(Configuration.GetSection("Jwt")); 
+            services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
 
             services.AddDbContext<ApplicationContext>(cfg =>
             {
@@ -91,6 +91,17 @@ namespace VaultApi
                         Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
                     ClockSkew = TimeSpan.FromSeconds(10)
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddControllers();
@@ -103,13 +114,13 @@ namespace VaultApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseSwagger();
-            app.UseSwaggerUI(config=>
+            app.UseSwaggerUI(config =>
             {
-                config.SwaggerEndpoint("./swagger/v1/swagger.json","Music Vault Api");
+                config.SwaggerEndpoint("./swagger/v1/swagger.json", "Music Vault Api");
                 config.RoutePrefix = String.Empty;
             });
 
-            
+
 
             app.UseRouting();
             app.UseAuthentication();

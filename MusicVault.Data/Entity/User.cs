@@ -19,6 +19,6 @@ namespace MusicVault.Data.Entity
         public byte[] PasswordSalt { get; set; }
         public DateTime Create { get; set; }
 
-        public List<RefreshToken> Tokens { get; set; } = new List<RefreshToken>();
+        public List<RefreshToken> Tokens { get; set; }=new List<RefreshToken>();
     }
 }

@@ -15,5 +15,6 @@ namespace MusicVault.Data.Entity
         public bool isRevoke { get; set; }
         [Required]
         public DateTime Created { get; set; }
+
     }
 }

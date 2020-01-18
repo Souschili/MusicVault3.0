@@ -20,13 +20,15 @@ namespace VaultApi.Controllers
         private readonly IOptions<JwtOptions> options;
         private readonly ITokenGenerator generator;
         private readonly DbContext context;
+        private readonly IUserManager userManager;
 
-        public TestController(IMapper map,IOptions<JwtOptions> opt,ITokenGenerator gen,DbContext db)
+        public TestController(IMapper map,IOptions<JwtOptions> opt,ITokenGenerator gen,DbContext db,IUserManager user)
         {
             mapper = map;
             options = opt;
             generator = gen;
             context = db;
+            userManager = user;
         }
         [HttpGet("GetUser")]
         public IActionResult Get()
@@ -80,8 +82,11 @@ namespace VaultApi.Controllers
 
         }
 
-
-
+        [HttpGet("User")]
+        public async Task<IActionResult> GetUserAsync()
+        {
+            return Ok(await context.Set<RefreshToken>().ToListAsync());
+        }
         [HttpGet("Secret")]
         [Authorize]
         public IActionResult Secret()

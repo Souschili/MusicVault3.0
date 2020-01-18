@@ -3,6 +3,7 @@ using MusicVault.Data.Entity;
 using MusicVault.Services.Helpers;
 using MusicVault.Services.Interfaces;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,15 +74,27 @@ namespace MusicVault.Services.Services
             return user;
         }
 
-        public async Task AddToken(string id,string token)
+        public async Task AddUserTokenAsync(Guid id,string token) 
         {
-            var user = await context.Set<User>().FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            var user = await context.Set<User>().FindAsync(id);
             //для теста  (del)
-            if (user == null) throw new ArgumentException("Something wrong with user");
+            if (user == null) throw new ArgumentException("Lord something wrong with user");
 
             var refreshToken = new RefreshToken { Content = token, isRevoke = false };
             user.Tokens.Add(refreshToken);
             await context.SaveChangesAsync();
         }
+
+
+        public async Task CleanUserTokensAsync(Guid id)
+        {
+            var currentuser = await context.Set<User>().Include(t => t.Tokens)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            currentuser.Tokens.Clear();
+            await context.SaveChangesAsync();
+            
+        }
+
+        
     }
 }

@@ -43,7 +43,7 @@ namespace VaultApi.Controllers
                 await userManager.AddUser(user, model.Password);
                 var token = await tokenGenerator.GenerateJwtTokenAsync(user);
                 //вписываем рефреш токен для юзера
-                await userManager.AddToken(user.Id.ToString(), token.Refresh);
+                await userManager.AddUserTokenAsync(user.Id, token.Refresh);
                 return Ok(token);
             }
             catch (Exception ex)
@@ -68,7 +68,8 @@ namespace VaultApi.Controllers
                 //если юзера нет, то вылетит ошибка отдадим юзеру мы не жадные
                 var user = await userManager.LogIn(login, password);
                 var token = await tokenGenerator.GenerateJwtTokenAsync(user);
-
+                //обновляем всю таблицу токенов для юзера( т.е удаляем все токены ,что скопились и больше ненужны)
+                await userManager.CleanUserTokensAsync(user.Id);
                 return Ok(token);
             }
             catch (ArgumentException ex)
