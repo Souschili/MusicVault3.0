@@ -76,7 +76,7 @@ namespace MusicVault.Services.Services
         public async Task AddToken(string id,string token)
         {
             var user = await context.Set<User>().FirstOrDefaultAsync(x => x.Id.ToString() == id);
-            //для теста
+            //для теста  (del)
             if (user == null) throw new ArgumentException("Something wrong with user");
 
             var refreshToken = new RefreshToken { Content = token, isRevoke = false };
