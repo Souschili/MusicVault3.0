@@ -72,5 +72,16 @@ namespace MusicVault.Services.Services
             var user = await context.Set<User>().FirstOrDefaultAsync(x => x.Id.ToString() == id);
             return user;
         }
+
+        public async Task AddToken(string id,string token)
+        {
+            var user = await context.Set<User>().FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            //для теста
+            if (user == null) throw new ArgumentException("Something wrong with user");
+
+            var refreshToken = new RefreshToken { Content = token, isRevoke = false };
+            user.Tokens.Add(refreshToken);
+            await context.SaveChangesAsync();
+        }
     }
 }

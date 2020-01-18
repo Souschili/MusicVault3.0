@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MusicVault.Data.Entity;
 using MusicVault.Services.Helpers;
@@ -18,12 +19,14 @@ namespace VaultApi.Controllers
         private readonly IMapper mapper;
         private readonly IOptions<JwtOptions> options;
         private readonly ITokenGenerator generator;
+        private readonly DbContext context;
 
-        public TestController(IMapper map,IOptions<JwtOptions> opt,ITokenGenerator gen)
+        public TestController(IMapper map,IOptions<JwtOptions> opt,ITokenGenerator gen,DbContext db)
         {
             mapper = map;
             options = opt;
             generator = gen;
+            context = db;
         }
         [HttpGet("GetUser")]
         public IActionResult Get()
@@ -63,6 +66,21 @@ namespace VaultApi.Controllers
 
             });
         }
+
+        [HttpPost("AddToken")]
+        public async Task<IActionResult> AddTokenAsync()
+        {
+            var user = await context.Set<User>().FirstOrDefaultAsync();
+            if (user == null) return BadRequest("No any users in DB");
+
+            var token = new RefreshToken { Content = "this is string token " };
+            user.Tokens.Add(token);
+            context.SaveChanges();
+            return Ok("Token Added");
+
+        }
+
+
 
         [HttpGet("Secret")]
         [Authorize]

@@ -42,6 +42,8 @@ namespace VaultApi.Controllers
             {
                 await userManager.AddUser(user, model.Password);
                 var token = await tokenGenerator.GenerateJwtTokenAsync(user);
+                //вписываем рефреш токен для юзера
+                await userManager.AddToken(user.Id.ToString(), token.Refresh);
                 return Ok(token);
             }
             catch (Exception ex)

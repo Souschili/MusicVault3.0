@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,7 @@ namespace MusicVault.Data.Entity
         [Required]
         public byte[] PasswordSalt { get; set; }
         public DateTime Create { get; set; }
+
+        public List<RefreshToken> Tokens { get; set; } = new List<RefreshToken>();
     }
 }

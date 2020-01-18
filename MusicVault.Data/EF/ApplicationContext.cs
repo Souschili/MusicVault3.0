@@ -9,6 +9,7 @@ namespace MusicVault.Data.EF
     public class ApplicationContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
@@ -24,7 +25,10 @@ namespace MusicVault.Data.EF
             modelBuilder.Entity<User>().Property(d=>d.Create)
                 .HasDefaultValueSql("GETDATE()");
 
-
+            //для таблицы токенов
+            modelBuilder.Entity<RefreshToken>().Property(d => d.Created)
+                .HasDefaultValueSql("GETDATE()");
+            
 
             
         }

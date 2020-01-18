@@ -17,11 +17,11 @@ namespace MusicVault.Services.Services
     public class TokenGenerator : ITokenGenerator
     {
         private readonly IOptions<JwtOptions> options;
-        private readonly IConfiguration Configuration;
+       // private readonly IConfiguration Configuration;
         public TokenGenerator(IOptions<JwtOptions> opt, IConfiguration config)
         {
             options = opt;
-            Configuration = config;
+            //Configuration = config;
         }
 
         //старый вариант
