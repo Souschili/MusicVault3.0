@@ -74,6 +74,7 @@ namespace MusicVault.Services.Services
             return user;
         }
 
+        #region //неиспользуемые методы
         public async Task AddUserTokenAsync(Guid id,string token) 
         {
             var user = await context.Set<User>().FindAsync(id);
@@ -94,7 +95,8 @@ namespace MusicVault.Services.Services
             await context.SaveChangesAsync();
             
         }
+        #endregion
 
-        
+
     }
 }
