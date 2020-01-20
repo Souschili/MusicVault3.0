@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +13,16 @@ namespace VaultApi.Controllers
     [ApiController]
     public class MusicUploadController : ControllerBase
     {
-        [Authorize]
+        
         [HttpPost("UploadMusic")]
-        public IActionResult UploadMusic()
+        public IActionResult UploadMusic(IFormFile uploaded)
         {
-            return Ok("Secret content");
+            var str=Path.GetExtension(uploaded.FileName);
+            if(uploaded!=null)
+            {
+                return Ok(new { FileName = uploaded.FileName,FileLenth=uploaded.Length ,Extension=str});
+            }
+            return Ok("");
         }
 
     }

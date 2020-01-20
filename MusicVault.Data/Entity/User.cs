@@ -20,5 +20,6 @@ namespace MusicVault.Data.Entity
         public DateTime Create { get; set; }
 
         public List<RefreshToken> Tokens { get; set; }=new List<RefreshToken>();
+        public List<PlayList> PlayLists { get; set; } = new List<PlayList>();
     }
 }

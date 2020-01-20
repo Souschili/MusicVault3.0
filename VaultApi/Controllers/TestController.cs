@@ -7,6 +7,7 @@ using MusicVault.Data.Entity;
 using MusicVault.Services.Helpers;
 using MusicVault.Services.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using VaultApi.ViewModels;
 
@@ -93,5 +94,50 @@ namespace VaultApi.Controllers
         {
             return Content("Very secret information");
         }
+
+
+        [HttpGet("GetId")]
+        [Authorize]
+        public IActionResult Id()
+        {
+            var id = HttpContext.User.Claims.ToList();
+            return Ok(new { UserID = id[0].Value });
+
+            #region памятка по httpcontext клаймы
+            //return Ok(new
+            //{
+            //    // {
+            //    // "claim1": "5db105c6-bb97-49ff-e630-08d79dac47f6",
+            //    // "claim2": "user@example.com",
+            //    // "claim3": "demo",
+            //    // "claim4": "1579527080",
+            //    // "claim5": "1579635080"
+            //    // }
+            //    // тестовый вывод клаймов
+            //    UserAccesseToken=HttpContext.Request.Headers["Autorization"],
+            //    ClaimsCount = id.Count,
+            //    UserId = id[0].Value,
+            //    UserEmail = id[1].Value,
+            //    UserLogin = id[2].Value,
+            //    nbf = id[3].Value,
+            //    exp = id[4].Value,
+            //    ExpAfterSecoond = Int32.Parse(id[4].Value) - Int32.Parse(id[3].Value),
+            //    Claim5=id[5].Value,
+            //    Claim6=id[6].Value
+            //});
+            #endregion
+        }
+
+
+        [HttpPost("AddPlaylist")]
+        public IActionResult AddPlaylist([FromBody]string playlistName)
+        {
+            var userId = HttpContext.User.Claims.ToList();
+            context.Set<PlayList>().AddAsync(new PlayList { Name = playlistName,UserId=userId[0].Value });
+            context.SaveChanges();
+            //var userInfo=context.Set<User>().
+            return Ok();
+        }
+
     }
 }
