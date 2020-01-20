@@ -101,7 +101,8 @@ namespace VaultApi.Controllers
         public IActionResult Id()
         {
             var id = HttpContext.User.Claims.ToList();
-            return Ok(new { UserID = id[0].Value });
+            return Ok(HttpContext.User.FindFirst("ID").Value); 
+            //return Ok(new { UserID = id[0].Value });
 
             #region памятка по httpcontext клаймы
             //return Ok(new
