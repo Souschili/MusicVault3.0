@@ -134,7 +134,7 @@ namespace VaultApi.Controllers
         public IActionResult AddPlaylist([FromBody]string playlistName)
         {
             var userId = HttpContext.User.Claims.ToList();
-            context.Set<PlayList>().AddAsync(new PlayList { Name = playlistName,UserId=userId[0].Value });
+            context.Set<PlayList>().AddAsync(new PlayList { Name = playlistName,OwnerID=userId[0].Value });
             context.SaveChanges();
             //var userInfo=context.Set<User>().
             return Ok();

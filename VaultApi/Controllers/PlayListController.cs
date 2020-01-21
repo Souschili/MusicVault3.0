@@ -26,10 +26,10 @@ namespace VaultApi.Controllers
         [Authorize]
         public IActionResult Create([FromBody]string name)
         {
+            // Если по каким то причина имя пустое 
             if (String.IsNullOrWhiteSpace(name)) return BadRequest(new { error = "Name Can't null or whitespace" });
 
-
-            var pl = new PlayList { Name = name, UserId = HttpContext.User.FindFirst("ID").Value };
+            var pl = new PlayList { Name = name, OwnerID = HttpContext.User.FindFirst("ID").Value };
             context.Set<PlayList>().Add(pl);
             context.SaveChanges();
             return Ok("PlayList Added");
