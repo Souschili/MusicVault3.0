@@ -27,7 +27,7 @@ namespace VaultApi.Controllers
         [Authorize]
         public IActionResult Create([FromBody]string name)
         {
-            //test   ппппппппппппп
+            
             // Если по каким то причина имя пустое 
             if (String.IsNullOrWhiteSpace(name)) return BadRequest(new { error = "Name Can't null or whitespace" });
             //получаем из контекста запроса клайм хранящий айди
