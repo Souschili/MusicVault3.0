@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicVault.Data.Entity;
+using MusicVault.Services.Interfaces;
 
 namespace VaultApi.Controllers
 {
@@ -15,10 +16,10 @@ namespace VaultApi.Controllers
     public class PlayListController : ControllerBase
     {
         //пока напрямую
-        private readonly DbContext context;
-        public PlayListController(DbContext db)
+        private readonly IPlayListManager listManager;
+        public PlayListController(IPlayListManager playList)
         {
-            context = db;
+            listManager = playList;
         }
 
 
@@ -28,10 +29,11 @@ namespace VaultApi.Controllers
         {
             // Если по каким то причина имя пустое 
             if (String.IsNullOrWhiteSpace(name)) return BadRequest(new { error = "Name Can't null or whitespace" });
+            //получаем из контекста запроса клайм хранящий айди
+            var userId = HttpContext.User.FindFirst("ID").Value;
 
-            var pl = new PlayList { Name = name, OwnerID = HttpContext.User.FindFirst("ID").Value };
-            context.Set<PlayList>().Add(pl);
-            context.SaveChanges();
+            listManager.CreatePlayList(name, userId);
+
             return Ok("PlayList Added");
         }
     }

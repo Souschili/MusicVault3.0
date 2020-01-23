@@ -9,7 +9,7 @@ namespace MusicVault.Data.Entity
     public class PlayList
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }
