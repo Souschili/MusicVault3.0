@@ -16,7 +16,7 @@ namespace MusicVault.Services.Services
             context = db;
         }
 
-        public async Task CreatePlayListAsync(string name, string userId)
+        public async Task CreatePlayListAsynс(string name, string userId)
         {
             var playList = new PlayList { Name = name, OwnerID = userId };
             await context.Set<PlayList>().AddAsync(playList);
