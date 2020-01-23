@@ -32,7 +32,7 @@ namespace VaultApi.Controllers
             //получаем из контекста запроса клайм хранящий айди
             var userId = HttpContext.User.FindFirst("ID").Value;
 
-            listManager.CreatePlayList(name, userId);
+            listManager.CreatePlayListAsynс(name, userId);
 
             return Ok("PlayList Added");
         }
