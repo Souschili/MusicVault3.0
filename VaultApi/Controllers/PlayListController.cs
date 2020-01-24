@@ -22,6 +22,11 @@ namespace VaultApi.Controllers
             listManager = playList;
         }
 
+        [HttpGet("testchanges")]
+        public IActionResult Change()
+        {
+            return Ok("This is what i am added after publishing");
+        }
 
         [HttpPost("CreatePlayList")]
         [Authorize]
