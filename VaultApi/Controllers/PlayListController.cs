@@ -22,10 +22,10 @@ namespace VaultApi.Controllers
             listManager = playList;
         }
 
-        [HttpGet("testchanges")]
-        public IActionResult Change()
+        [HttpPost("GetList")]
+        public IActionResult GetList()
         {
-            return Ok("This is what i am added after publishing");
+            return Ok("Hello dude!1");
         }
 
         [HttpPost("CreatePlayList")]
