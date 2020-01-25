@@ -15,6 +15,7 @@ namespace MusicVault.Data.Entity
         public string Name { get; set; }
 
         public string OwnerID { get; set; }
+        public DateTime Created { get; set; }
 
     }
 }

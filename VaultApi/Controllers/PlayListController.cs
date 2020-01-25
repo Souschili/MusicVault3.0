@@ -22,17 +22,30 @@ namespace VaultApi.Controllers
             listManager = playList;
         }
 
-        [HttpPost("Sayka")]
-        public IActionResult GetList()
+        /// <summary>
+        /// Удалить плейлист
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpPost("DeletePlayList")]
+        [Authorize]
+        public async Task<IActionResult> DeletePlayListAsync([FromBody]string name)
         {
-            return Ok("Hello Tortik");
+            var ownerId = HttpContext.User.FindFirst("ID").Value;
+            await listManager.DeletePlayListAsync(name, ownerId);
+            return Ok();
         }
 
+        /// <summary>
+        /// Создать плейлист
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpPost("CreatePlayList")]
         [Authorize]
         public IActionResult Create([FromBody]string name)
         {
-            
+
             // Если по каким то причина имя пустое 
             if (String.IsNullOrWhiteSpace(name)) return BadRequest(new { error = "Name Can't null or whitespace" });
             //получаем из контекста запроса клайм хранящий айди
@@ -41,6 +54,15 @@ namespace VaultApi.Controllers
             listManager.CreatePlayListAsynс(name, userId);
 
             return Ok("PlayList Added");
+        }
+
+        [HttpPost("GetAllPlayList")]
+        [Authorize]
+        public async Task<IActionResult> GetAllPlayListAsync()
+        {
+            var ownerId = HttpContext.User.FindFirst("ID").Value;
+            var rezult = await listManager.GetAllPlayListAsync(ownerId);
+            return Ok(rezult);
         }
     }
 }
