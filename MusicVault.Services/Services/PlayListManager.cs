@@ -38,11 +38,12 @@ namespace MusicVault.Services.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<PlayList>> GetAllPlayListAsync(string ownerId)
+        public async Task<ICollection<PlayList>> GetAllPlayListAsync(string userId)
         {
 
-            throw new NotImplementedException();
-
+            var user = await context.Set<User>().Include(p => p.PlayLists)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == userId);
+            return user.PlayLists;
         }
 
         //удалить 

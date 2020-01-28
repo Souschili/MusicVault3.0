@@ -8,7 +8,7 @@ namespace MusicVault.Services.Interfaces
     {
         Task CreatePlayListAsynс(string name,string userId);
         Task DeletePlayListAsync(string name,string ownerId);
-        Task<ICollection<PlayList>> GetAllPlayListAsync(string ownerId);
+        Task<ICollection<PlayList>> GetAllPlayListAsync(string userId); 
         Task<User> Test(string id); //delete
     }
 }
