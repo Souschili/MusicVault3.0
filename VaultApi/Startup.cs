@@ -151,7 +151,8 @@ namespace VaultApi
                 config.RoutePrefix = String.Empty;
             });
 
-
+            //перенаправление на https
+            //app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseCors(x => x

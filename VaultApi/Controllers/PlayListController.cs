@@ -43,17 +43,22 @@ namespace VaultApi.Controllers
         /// <returns></returns>
         [HttpPost("CreatePlayList")]
         [Authorize]
-        public IActionResult Create([FromBody]string name)
+        public async Task<IActionResult> CreatePlayListAsync([FromBody]string name)
         {
-
             // Если по каким то причина имя пустое 
             if (String.IsNullOrWhiteSpace(name)) return BadRequest(new { error = "Name Can't null or whitespace" });
             //получаем из контекста запроса клайм хранящий айди
             var userId = HttpContext.User.FindFirst("ID").Value;
-
-            listManager.CreatePlayListAsynс(name, userId);
-
-            return Ok("PlayList Added");
+            try
+            {
+               await listManager.CreatePlayListAsynс(name, userId);
+               return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            
         }
 
         [HttpPost("GetAllPlayList")]

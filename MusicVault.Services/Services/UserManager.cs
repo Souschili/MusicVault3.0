@@ -50,7 +50,9 @@ namespace MusicVault.Services.Services
             if (user == null)
                 throw new ArgumentException("Password or Login is invalid");
             // await Task.Run дожидаемся выполнения таска в асинхроном стиле
-            await Task.Run(()=>PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash));
+            var passVerify=await Task.Run(()=>PassCryptHelper.VerifyPassword(password, user.PasswordSalt, user.PasswordHash));
+            if (!passVerify)
+                throw new ArgumentException("Password or login is invalid");
             return user;
         }
 

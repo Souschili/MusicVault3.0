@@ -14,7 +14,7 @@ namespace MusicVault.Data.EF
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -23,15 +23,18 @@ namespace MusicVault.Data.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //автогенерация значения столбца при добавлении (конкретно дата создания сущности в таблице)
-            modelBuilder.Entity<User>().Property(d=>d.Create)
+            modelBuilder.Entity<User>().Property(d => d.Create)
                 .HasDefaultValueSql("GETDATE()");
 
             //для таблицы токенов
             modelBuilder.Entity<RefreshToken>().Property(d => d.Created)
                 .HasDefaultValueSql("GETDATE()");
-            
 
-            
+            //для плей листов
+            modelBuilder.Entity<PlayList>().Property(d => d.Created)
+                .HasDefaultValueSql("GETDATE()");
+
+
         }
     }
 }
