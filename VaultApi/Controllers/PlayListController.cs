@@ -31,8 +31,8 @@ namespace VaultApi.Controllers
         [Authorize]
         public async Task<IActionResult> DeletePlayListAsync([FromBody]string name)
         {
-            var ownerId = HttpContext.User.FindFirst("ID").Value;
-            await listManager.DeletePlayListAsync(name, ownerId);
+            var userId = HttpContext.User.FindFirst("ID").Value;
+            await listManager.DeletePlayListAsync(name, userId);
             return Ok();
         }
 

@@ -24,8 +24,8 @@ namespace VaultApi.Controllers
         private readonly IUserManager userManager;
         private readonly IPlayListManager listManager;
 
-        public TestController(IMapper map,IOptions<JwtOptions> opt,
-            ITokenGenerator gen,DbContext db,IUserManager user,IPlayListManager play)
+        public TestController(IMapper map, IOptions<JwtOptions> opt,
+            ITokenGenerator gen, DbContext db, IUserManager user, IPlayListManager play)
         {
             mapper = map;
             options = opt;
@@ -34,7 +34,7 @@ namespace VaultApi.Controllers
             userManager = user;
             listManager = play;
         }
-      
+
         [HttpGet("UserPlayList")]
         [Authorize]
         public async Task<IActionResult> PlayListsAsync()
@@ -45,20 +45,30 @@ namespace VaultApi.Controllers
             var rezult = await listManager.Test(id);
             return Ok(rezult);
 
-           // var user = await context.Set<User>().Include(p=> p.PlayLists)
-           //     .FirstOrDefaultAsync(x => x.Id.ToString() == userID);
-           //
-           // return Ok(new
-           // {
-           //     UserID = userID,
-           //     userName = user.Login,
-           //     playlists = user.PlayLists
-           // });
+            // var user = await context.Set<User>().Include(p=> p.PlayLists)
+            //     .FirstOrDefaultAsync(x => x.Id.ToString() == userID);
+            //
+            // return Ok(new
+            // {
+            //     UserID = userID,
+            //     userName = user.Login,
+            //     playlists = user.PlayLists
+            // });
         }
-      
+
+        [HttpPost("Delete")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAsync([FromBody]string plName)
+        {
+            var userID = HttpContext.User.FindFirst("ID").Value;
+            var user = await context.Set<User>().Include(p => p.PlayLists)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == userID);
+            user.PlayLists.RemoveAll(x => x.Name == plName);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
 
 
-        
 
     }
 }

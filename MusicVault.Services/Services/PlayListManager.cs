@@ -33,9 +33,12 @@ namespace MusicVault.Services.Services
            
         }
 
-        public Task DeletePlayListAsync(string name,string ownerId)
+        public async Task DeletePlayListAsync(string name,string userId)
         {
-            throw new NotImplementedException();
+            var user = await context.Set<User>().Include(p => p.PlayLists)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == userId);
+            user.PlayLists.RemoveAll(x => x.Name == name);
+            await context.SaveChangesAsync();
         }
 
         public async Task<ICollection<PlayList>> GetAllPlayListAsync(string userId)
