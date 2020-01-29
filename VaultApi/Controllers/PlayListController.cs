@@ -11,6 +11,9 @@ using MusicVault.Services.Interfaces;
 
 namespace VaultApi.Controllers
 {
+    /// <summary>
+    /// Плейлисты
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PlayListController : ControllerBase
@@ -61,6 +64,10 @@ namespace VaultApi.Controllers
             
         }
 
+        /// <summary>
+        /// Получить все плейлисты
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("GetAllPlayList")]
         [Authorize]
         public async Task<IActionResult> GetAllPlayListAsync()

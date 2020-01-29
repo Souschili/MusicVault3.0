@@ -13,6 +13,9 @@ using VaultApi.ViewModels;
 
 namespace VaultApi.Controllers
 {
+    /// <summary>
+    /// Тестовый контролер
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
@@ -35,6 +38,10 @@ namespace VaultApi.Controllers
             listManager = play;
         }
 
+        /// <summary>
+        /// Тестовый запись плейлиста
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("UserPlayList")]
         [Authorize]
         public async Task<IActionResult> PlayListsAsync()
@@ -56,6 +63,11 @@ namespace VaultApi.Controllers
             // });
         }
 
+        /// <summary>
+        /// Удаление плейлиста по имени
+        /// </summary>
+        /// <param name="plName"></param>
+        /// <returns></returns>
         [HttpPost("Delete")]
         [Authorize]
         public async Task<IActionResult> DeleteAsync([FromBody]string plName)
@@ -68,7 +80,18 @@ namespace VaultApi.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// Вывод информации о текущем пользователе
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("UserInfo")]
+        [Authorize]
+        public async Task<IActionResult> UserInfoAsync()
+        {
+            var id = HttpContext.User.FindFirst("ID").Value;
+            var user = await context.Set<User>().Include(x=> x.PlayLists).FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return Ok(user);
+        }
 
     }
 }

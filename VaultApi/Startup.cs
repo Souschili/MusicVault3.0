@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -56,12 +58,12 @@ namespace VaultApi
 
             services.AddSwaggerGen(cfg =>
             {
-                cfg.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                cfg.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Description = "Api for store music",
                     Title = "Music Vault Api",
                     Version = "3.0.0",
-                    Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                    Contact = new OpenApiContact
                     {
                         Email = "greatdragone75@gmail.com",
                         Name = "TengriBizMenen",
@@ -96,7 +98,10 @@ namespace VaultApi
 
                     }
                 });
-
+               // Azure вырубает хз почему , по логам ненаходит xml файл
+               // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+               // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+               // cfg.IncludeXmlComments(xmlPath,true);
             });
 
             //Jwt

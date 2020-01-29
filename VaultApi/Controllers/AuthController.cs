@@ -8,6 +8,9 @@ using VaultApi.ViewModels;
 
 namespace VaultApi.Controllers
 {
+    /// <summary>
+    /// Авторизация
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
