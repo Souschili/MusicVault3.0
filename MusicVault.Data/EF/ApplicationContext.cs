@@ -34,6 +34,12 @@ namespace MusicVault.Data.EF
             modelBuilder.Entity<PlayList>().Property(d => d.Created)
                 .HasDefaultValueSql("GETDATE()");
 
+            // настриваем каскадное удаление ,чтоб не было строк с внешним ключом равным NULL
+            modelBuilder.Entity<User>()
+                .HasMany(p => p.PlayLists)
+                .WithOne() //так как у нас теневой ключ то тут просто ничего не вписываем
+                .OnDelete(DeleteBehavior.Cascade);
+
 
         }
     }
