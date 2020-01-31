@@ -89,9 +89,16 @@ namespace VaultApi.Controllers
         public async Task<IActionResult> UserInfoAsync()
         {
             var id = HttpContext.User.FindFirst("ID").Value;
-            var user = await context.Set<User>().Include(x=> x.PlayLists).FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            var user = await context.Set<User>().Include(x=> x.PlayLists)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == id);
             return Ok(user);
         }
 
+        [HttpPost("AllUsers")]
+        public async Task<IActionResult> GetAllUsersAsync()
+        {
+            var users = await context.Set<User>().ToListAsync();
+            return Ok(users);
+        }
     }
 }
